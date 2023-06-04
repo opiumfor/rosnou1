@@ -12,11 +12,6 @@ bool isRightTriangle(double a, double b, double c) {
     return false;
 }
 
-double area(double a, double b, double c) {
-    double p = (a + b + c) / 2;
-    return sqrt(p * (p - a) * (p - b) * (p - c));
-}
-
 bool isValidTriangle(double a, double b, double c) {
     if (a <= 0 || b <= 0 || c <= 0) {
         cout << "Ошибка: длины сторон должны быть положительными.\n";
@@ -28,6 +23,11 @@ bool isValidTriangle(double a, double b, double c) {
         return false;
     }
     return true;
+}
+
+double area(double a, double b, double c) {
+    double p = (a + b + c) / 2;
+    return sqrt(p * (p - a) * (p - b) * (p - c));
 }
 
 void input(vector<vector<double>>& triangles) {
@@ -113,6 +113,32 @@ void inputFromFile(vector<vector<double>>& triangles, const string& fileName) {
     inputFile.close();
 }
 
+void randomInput(vector<vector<double>>& triangles, const int& count, const double& minLength, const double& maxLength) {
+    for (int i = 0; i < count; i++) {
+        double a = minLength + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (maxLength - minLength)));
+        double b = minLength + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (maxLength - minLength)));
+        double c;
+        if (rand() % 2 == 0) {
+            c = minLength +
+                static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (maxLength - minLength)));
+        } else {
+            c = sqrt(a*a + b*b);
+        }
+
+        if (isRightTriangle(a, b, c)) {
+            double currentArea = area(a, b, c);
+            triangles.push_back({a, b, c, currentArea});
+            double totalArea = 0;
+            for (vector<double> triangle : triangles) {
+                totalArea += triangle[3];
+            }
+        }
+        else {
+            triangles.push_back({a, b, c, 0});
+        }
+    }
+}
+
 void output(vector<vector<double>> triangles) {
     double totalArea = 0;
 
@@ -154,36 +180,12 @@ int main()
         cin >> n;
         cout << "Введите минимальную и максимальную длину стороны: ";
         cin >> minLength >> maxLength;
-
         if (minLength <= 0 || maxLength <= 0 || minLength > maxLength) {
             cerr << "Ошибка: некорректно введены данные.\n";
             return 0;
         }
 
-        for (int i = 0; i < n; i++) {
-            double a = minLength + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (maxLength - minLength)));
-            double b = minLength + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (maxLength - minLength)));
-            double c;
-            if (rand() % 2 == 0) {
-                c = minLength +
-                           static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (maxLength - minLength)));
-            } else {
-                c = sqrt(a*a + b*b);
-            }
-
-            if (isRightTriangle(a, b, c)) {
-                double currentArea = area(a, b, c);
-                triangles.push_back({a, b, c, currentArea});
-                double totalArea = 0;
-                for (vector<double> triangle : triangles) {
-                    totalArea += triangle[3];
-                }
-                cout << "Текущая суммарная площадь прямоугольных треугольников: " << totalArea << endl;
-            }
-            else {
-                triangles.push_back({a, b, c, 0});
-            }
-        }
+        randomInput(triangles, n, minLength, maxLength);
     }
     else {
         cerr << "Ошибка: некорректный ввод.\n";
