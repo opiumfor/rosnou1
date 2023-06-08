@@ -141,6 +141,7 @@ void randomInput(vector<vector<double>>& triangles, const int& count, const doub
 
 void output(vector<vector<double>> triangles) {
     double totalArea = 0;
+    int rightTrianglesCount = 0;
 
     cout << "Данные о треугольниках:" << endl;
     for (int i = 0; i < triangles.size(); i++) {
@@ -148,12 +149,17 @@ void output(vector<vector<double>> triangles) {
         if (triangles[i][3] > 0) {
             cout << " (прямоугольный, площадь " << triangles[i][3] << ") ";
             totalArea += triangles[i][3];
-            cout << "Текущая суммарная площадь прямоугольных треугольников: " << totalArea;
+            rightTrianglesCount++;
+            printf("Текущая суммарная площадь прямоугольных треугольников: %f\nКол-во прямоугольных: %i",
+                   totalArea,
+                   rightTrianglesCount);
         }
         cout << endl;
     }
 
-    cout << "Суммарная площадь прямоугольных треугольников: " << totalArea << endl;
+    printf("Итоговая суммарная площадь прямоугольных треугольников: %f\nКол-во прямоугольных: %i",
+           totalArea,
+           rightTrianglesCount);
 }
 
 int main()
@@ -169,7 +175,7 @@ int main()
     }
     else if (choice == '2') {
         string fileName;
-        cout << "Введите имя файла: ";
+        cout << "Введите путь к файлу: ";
         cin >> fileName;
         inputFromFile(triangles, fileName);
     }
